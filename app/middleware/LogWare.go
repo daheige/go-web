@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -9,12 +8,10 @@ import (
 
 type LogWare struct{}
 
+//和RequestWare中的LogAccess功能一样，为了兼容httpRouter路由设置
+//对于httprouter.Handler加访问日志
 func (LogWare) Access(h httprouter.Handle) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		log.Println("exec begin")
-		log.Println("request uri: ", r.RequestURI)
-		h(w, r, ps)
-
-		log.Println("exec end")
+		RequestAccess(h, w, r, ps)
 	}
 }

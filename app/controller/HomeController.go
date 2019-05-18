@@ -2,9 +2,12 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"encoding/json"
+
+	"go-web/app/config"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -40,4 +43,30 @@ func (ctrl HomeController) Foo(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	w.Write(jsonBytes)
+}
+
+func (ctrl HomeController) MockPanic(w http.ResponseWriter, r *http.Request) {
+	panic("exec panic")
+}
+
+func (ctrl HomeController) Info(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(`{"code":200,"message":"ok"}`))
+}
+
+//A very simple redis set data
+func (ctrl HomeController) SetData(w http.ResponseWriter, r *http.Request) {
+	redisObj, err := config.GetRedisObj("default")
+	if err != nil {
+		log.Println(err)
+		w.Write([]byte(`{"code":500,"message":"redis connection error"}`))
+		return
+	}
+
+	_, err = redisObj.Do("set", "myname", "daheige")
+	if err != nil {
+		w.Write([]byte(`{"code":500,"message":"set redis data error"}`))
+		return
+	}
+
+	w.Write([]byte(`{"code":200,"message":"ok"}`))
 }
