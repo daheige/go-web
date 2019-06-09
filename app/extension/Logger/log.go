@@ -50,16 +50,16 @@ func writeLog(req *http.Request, levelName string, message interface{}, context 
 	_, file, line, _ := runtime.Caller(2)
 
 	logInfo := map[string]interface{}{
-		"tag":          tag,
-		"request_uri":  req.RequestURI,
-		"log_id":       logId,
-		"options":      context,
-		"host":         req.RemoteAddr,
-		"current_line": line,
-		"current_file": filepath.Base(file),
-		"ua":           ua,
-		"plat":         utils.GetDeviceByUa(ua), //当前设备匹配
-		"method":       req.Method,
+		"tag":         tag,
+		"request_uri": req.RequestURI,
+		"log_id":      logId,
+		"options":     context,
+		"host":        req.RemoteAddr,
+		"trace_line":  line,
+		"trace_file":  filepath.Base(file),
+		"ua":          ua,
+		"plat":        utils.GetDeviceByUa(ua), //当前设备匹配
+		"method":      req.Method,
 	}
 
 	switch levelName {
