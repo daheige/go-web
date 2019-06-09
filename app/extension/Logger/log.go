@@ -7,6 +7,8 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/daheige/thinkgo/logger"
+
 	"github.com/daheige/thinkgo/common"
 )
 
@@ -18,25 +20,20 @@ import (
     "msg": "exec end",
     "line_no": 38,
     "file_path": "/web/hg-mux/app/extension/Logger/log.go",
-    "context":
-    {
-        "current_file": "RequestWare.go",
-        "current_line": 36,
-        "host": "[::1]:52846",
-        "log_id": "f0421e4bf186d512ced7c1228ac8f9ee",
-        "method": "GET",
-        "options":
-        {
-            "exec_time": 0.000320906
-        },
-        "plat": "web",
-        "request_uri": "/",
-        "tag": "_",
-        "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"
-    }
+	"trace_file": "RequestWare.go",
+	"trace_line": 36,
+	"host": "[::1]:52846",
+	"log_id": "f0421e4bf186d512ced7c1228ac8f9ee",
+	"method": "GET",
+	"exec_time": 0.000320906
+	"plat": "web",
+	"request_uri": "/",
+	"tag": "_",
+	"ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"
 }
 */
-func writeLog(req *http.Request, levelName string, message interface{}, context map[string]interface{}) {
+
+func writeLog(req *http.Request, levelName string, message string, context map[string]interface{}) {
 	tag := strings.Replace(req.RequestURI, "/", "_", -1)
 	ua := req.Header.Get("User-Agent")
 
@@ -64,40 +61,36 @@ func writeLog(req *http.Request, levelName string, message interface{}, context 
 
 	switch levelName {
 	case "info":
-		common.InfoLog(message, logInfo)
+		logger.Info(message, logInfo)
 	case "debug":
-		common.DebugLog(message, logInfo)
-	case "notice":
-		common.NoticeLog(message, logInfo)
+		logger.Debug(message, logInfo)
 	case "warn":
-		common.WarnLog(message, logInfo)
+		logger.Warn(message, logInfo)
 	case "error":
-		common.ErrorLog(message, logInfo)
+		logger.Error(message, logInfo)
 	case "emergency":
-		common.EmergLog(message, logInfo)
+		logger.DPanic(message, logInfo)
+	default:
+		logger.Info(message, logInfo)
 	}
 }
 
-func Info(req *http.Request, message interface{}, context map[string]interface{}) {
+func Info(req *http.Request, message string, context map[string]interface{}) {
 	writeLog(req, "info", message, context)
 }
 
-func Debug(req *http.Request, message interface{}, context map[string]interface{}) {
+func Debug(req *http.Request, message string, context map[string]interface{}) {
 	writeLog(req, "debug", message, context)
 }
 
-func Notice(req *http.Request, message interface{}, context map[string]interface{}) {
-	writeLog(req, "notice", message, context)
-}
-
-func Warn(req *http.Request, message interface{}, context map[string]interface{}) {
+func Warn(req *http.Request, message string, context map[string]interface{}) {
 	writeLog(req, "warn", message, context)
 }
 
-func Error(req *http.Request, message interface{}, context map[string]interface{}) {
+func Error(req *http.Request, message string, context map[string]interface{}) {
 	writeLog(req, "error", message, context)
 }
 
-func Emergency(req *http.Request, message interface{}, context map[string]interface{}) {
+func Emergency(req *http.Request, message string, context map[string]interface{}) {
 	writeLog(req, "emergency", message, context)
 }

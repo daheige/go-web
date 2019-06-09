@@ -12,6 +12,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/daheige/thinkgo/logger"
+
 	"github.com/daheige/thinkgo/common"
 
 	"flag"
@@ -34,8 +36,10 @@ func init() {
 	flag.Parse()
 
 	//日志文件设置
-	common.LogSplit(true)
-	common.SetLogDir(log_dir)
+	logger.SetLogDir(log_dir)
+	logger.SetLogFile("go-web.log")
+	//logger.MaxSize(500)
+	logger.InitLogger()
 
 	//初始化配置文件
 	config.InitConf(config_dir)
